@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 
 
@@ -14,15 +15,30 @@ pressure = data['pressure']
 heaterTemp = data['temp1']
 heatSinkTemp= data['temp2']
 
-
-sortingPres = np.zeros(len(pressure))
+lowSortingPres = np.zeros(len(pressure))
 
 for i, pres in enumerate(pressure):
-    if pres[i+1] < pres[i]:
-        sortingPres[i] = pres[i]
-    elif pres[i+1] > pres[i]:
-        sortingPres[i] = 0
+    if (i+1) <= len(pressure) - 1:
+        if pressure[i+1] >= pres:
+            lowSortingPres[i] = pres
+        elif pressure[i+1] <= pres:
+            lowSortingPres[i] = (pres - pressure[i+1]) + pres
+    else:
+        lowSortingPres[i] = 0
+        break
 
+highSortingPres = np.zeros(len(pressure))
 
-plt.plot(volume,sortingPres)
+for i, pres in enumerate(pressure):
+    if (i+1) <= len(pressure) - 1:
+        if pressure[i+1] <= pres:
+            highSortingPres[i] = pres
+        elif pressure[i+1] >= pres:
+            highSortingPres[i] = 0
+    else:
+        highSortingPres[i] = 0
+        break
+
+plt.plot(volume,highSortingPres)
+plt.plot(volume, lowSortingPres)
 plt.show()
