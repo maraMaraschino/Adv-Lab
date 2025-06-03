@@ -13,7 +13,7 @@ def find_resistance(current_data, voltage_data):
     resistance_sigma, intercept_sigma = np.sqrt(np.diag(pcov))
     return resistance, intercept, resistance_sigma
 
-def plot_resistance(csv_file, B, R, Magnet=True):
+def plot_resistance(csv_file, B, R, Magnet=True, savefig=True):
     resistance_data = pd.read_csv(f'{csv_file}', skiprows=8, index_col=0)
     current = resistance_data.iloc[:,13]
     voltage = resistance_data.iloc[:,0]
@@ -34,7 +34,11 @@ def plot_resistance(csv_file, B, R, Magnet=True):
     plt.xlabel('Current (A)')
     plt.ylabel('Voltage')
     plt.legend(title=f'Resistance = {resistance:.3f} ohms +/- {resistance_sigma:.3f} ohms')
-
+    if savefig:
+        if Magnet:
+            plt.savefig(f'{B}-to-{R}_magnet.png')
+        else:
+            plt.savefig(f'{B}-to-{R}.png')
     plt.show()
 
     return resistance, resistance_sigma
